@@ -1,4 +1,4 @@
-body,
+body{background-image: url(https://st4.depositphotos.com/24595320/39536/v/450/depositphotos_395365738-stock-illustration-cute-cat-seamless-background-repeating.jpg); background-repeat: repeat;}
 body *,
 body *::before,
 body *::after {margin:0;padding:0;border:0;background:transparent;box-sizing:border-box;text-decoration:none;outline:none;font-family:inherit;}

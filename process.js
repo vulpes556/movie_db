@@ -93,6 +93,33 @@ const sortActors = (tempMovie) => {
 
 
 }
+const sortGenres = (tempGenre) => {
+			if (!movieDB.genres.some(genreObject => genreObject["name"] === tempGenre)) {  // ha egyszer sem szerepel benne, false értéket ad vissza
+				let tempObject = {
+					id: movieDB.genres.length+1,
+					name: tempGenre
+				}
+				movieDB.genres.push(tempObject)
+				
+			}
+
+	}
+
+
+
+const genreIdReplacement = (movie) =>{
+	movieDB.genres.forEach(uniqueGenre =>{
+		movie.genres.forEach((genre, i)=>{
+			if(genre === uniqueGenre.name){
+				movie.genres[i] = uniqueGenre.id
+			}
+		})
+	})
+	return movie
+}
+
+
+
 const movieIdReplacement = (movie) => {
 	movieDB.professionals.forEach(person => {
 		movie.writers.forEach((writer, index) => {
@@ -119,8 +146,10 @@ data.movies.forEach(movie => {
 	sortWriters(movie)
 	sortDirectors(movie)
 	sortActors(movie)
+	movie.genres.forEach(genre => sortGenres(genre) )
 
 })
+fs.writeFileSync("tempData3.json", JSON.stringify(movieDB["genres"]))
 fs.writeFileSync("tempData.json", JSON.stringify(movieDB.professionals))
 const allNames = movieDB.professionals.map(person => person.name)
 const uniqueNames = allNames.filter((value, index, array) => array.indexOf(value) === index)
@@ -129,6 +158,7 @@ console.log(allNames.length, uniqueNames.length);
 let unique_id = 11
 movieDB.movies = data.movies.map(movie => {
 	movieIdReplacement(movie)
+	genreIdReplacement(movie)
 	movie["unique_id"] = unique_id
 	unique_id += MAGICNUMBER
 	return movie
