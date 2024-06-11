@@ -5,7 +5,7 @@ const movieDB = {
 	movies: [],
 	genres: []
 }
-
+const MAGICNUMBER = 42069 //for obvious reasons
 const data = JSON.parse(fs.readFileSync("data.json"))
 const allUniquePers = [];
 let indexCounter = 1
@@ -32,6 +32,10 @@ const sortWriters = (tempMovie) => {
 }
 const sortDirectors = (tempMovie) => {
 	const allDirectors = tempMovie.directors.map(director => director)
+	// if (allDirectors.includes("Gary Scott Thompson")) {
+	// 	console.log(true);
+	// }	
+	// console.log(allDirectors);
 	allDirectors.forEach(person => {
 		if (!allUniquePers.includes(person)) {
 			let tempObject = {
@@ -47,9 +51,9 @@ const sortDirectors = (tempMovie) => {
 			indexCounter++
 		} else {
 			movieDB.professionals.forEach(prof => {
-				if (!prof.roles.includes("Director")) {
-					prof.roles.push("Director")
-				}
+					if (prof.name === person && !prof.roles.includes("Director")) {
+						prof.roles.push("Director")
+					}
 			})
 		}
 
@@ -74,11 +78,14 @@ const sortActors = (tempMovie) => {
 			indexCounter++
 		} else {
 			movieDB.professionals.forEach(prof => {
-				if (prof.name === person) {
-					if (!prof.roles.includes("Actor")) {
-						prof.roles.push("Actor")
-					}
+				if (prof.name === person && !prof.roles.includes("Actor")) {
+					prof.roles.push("Actor")
 				}
+				// if (prof.name === person) {
+				// 	if (!prof.roles.includes("Actor")) {
+				// 		prof.roles.push("Actor")
+				// 	}
+				// }
 			})
 		}
 
@@ -119,12 +126,11 @@ const allNames = movieDB.professionals.map(person => person.name)
 const uniqueNames = allNames.filter((value, index, array) => array.indexOf(value) === index)
 console.log(allNames.length, uniqueNames.length);
 
-let uniqe_id = 0 + Math.PI
-console.log(Math.PI);
+let unique_id = 11
 movieDB.movies = data.movies.map(movie => {
 	movieIdReplacement(movie)
-	movie["uniqe_id"] = uniqe_id
-	uniqe_id += Math.PI
+	movie["unique_id"] = unique_id
+	unique_id += MAGICNUMBER
 	return movie
 
 })
