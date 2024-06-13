@@ -5,8 +5,14 @@ const movieDB = {
 	movies: [],
 	genres: []
 }
+
 const MAGICNUMBER = 42069 //for obvious reasons
 const data = JSON.parse(fs.readFileSync("data.json"))
+// data.movies.forEach(movie => {
+// 	movie.actors.forEach((actor, index) => movie.actors[index] = actor.trim())
+// 	movie.directors.forEach((director, index) => movie.directors[index] = director.trim())
+// 	movie.writers.forEach((writer, index) => movie.writers[index] = writer.trim())
+// })
 const allUniquePers = [];
 let indexCounter = 1
 const sortWriters = (tempMovie) => {
