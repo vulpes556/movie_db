@@ -81,16 +81,7 @@ const createDirectorList = movie => {
   });
   return actorsUl
 }
-const createGenreDiv = (tempGenre, element) => {
-  const genreHeader = document.createElement("h1")
-  genreHeader.id = "text-marker"
-  genreHeader.innerText = tempGenre.name.toUpperCase()
-  element.appendChild(genreHeader)
-  const genreDiv = document.createElement("div");
-  genreDiv.id = tempGenre.id
-  return genreDiv
 
-}
 const createGenreButton = (tempGenre) => {
   const genreButton = document.createElement("button");
   genreButton.id = tempGenre.id
@@ -345,24 +336,3 @@ const loadEvent = function () {
 }
 
 window.addEventListener("load", loadEvent);
-
-
-
-
-
-
-// function professionMovies(professional, profession) {
-//   let newObj = {
-//     name: professional.name,
-//     personFilms: [],
-//   }
-//   data.movies.sort((currentMovie, nextMovie) => currentMovie.year - nextMovie.year).forEach(movie => {
-//     for (const prof of movie[profession]) {
-//       if (professional.id === prof) {
-//         newObj.personFilms.push(movie.title)
-//       }
-//     }
-
-//   })
-//   return newObj
-// }
