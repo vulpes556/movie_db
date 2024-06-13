@@ -36,6 +36,14 @@ const createMovieDiv = movie => {
   movieDiv.innerHTML = `<h2>${movie.title}</h2>`
   return movieDiv
 }
+const createGenreDivForSearch = genre => {
+  const genreDiv = document.createElement("div")
+  genreDiv.className = "post-it"
+  genreDiv.id = genre.id
+  genreDiv.style.transform = `rotate(${Math.floor(Math.random() * 24) - 12}deg)`
+  genreDiv.innerHTML = `<h2>${genre.name.toUpperCase()}</h2>`
+  return genreDiv
+}
 const createWriterList = movie => {
   const writersUl = document.createElement("ul")
   writersUl.innerHTML = "<h3>Writers:</h3>"
@@ -43,6 +51,19 @@ const createWriterList = movie => {
     writersUl.innerHTML += `<li>${data["professionals"][writer - 1]["name"]}</li>`
   });
   return writersUl
+}
+const createGenreList = inputGenre => {
+  const genresUl = document.createElement("ul")
+  data.movies.forEach(movie => {
+    movie.genres.forEach(genre => {
+      if (genre === inputGenre.id) {
+        genresUl.innerHTML += `<li>${movie.title}</li>`
+        
+      }
+    });
+
+  })
+  return genresUl
 }
 const createActorList = movie => {
   const directorUl = document.createElement("ul")
@@ -60,14 +81,6 @@ const createDirectorList = movie => {
   });
   return actorsUl
 }
-const createTempList = movie => {
-  const tempsUl = document.createElement("ul")
-  tempsUl.innerHTML = "<h3>temps:</h3>"
-  movie.temps.forEach(temp => {
-    tempsUl.innerHTML += `<li>${data["professionals"][temp - 1]["name"]}</li>`
-  });
-  return tempsUl
-}
 const createGenreDiv = (tempGenre, element) => {
   const genreHeader = document.createElement("h1")
   genreHeader.id = "text-marker"
@@ -79,11 +92,11 @@ const createGenreDiv = (tempGenre, element) => {
   return genreDiv
 
 }
-const createGenreButton = (tempGenre, element) => {
+const createGenreButton = (tempGenre) => {
   const genreButton = document.createElement("button");
   genreButton.id = tempGenre.id
   genreButton.className = "genre-button"
-  genreButton.innerHTML = `<h1 id = "text-marker-v2">${tempGenre.name.toUpperCase()} </h1>`
+  genreButton.innerHTML = `<h1>${tempGenre.name.toUpperCase()} </h1>`
   return genreButton
 
 }
@@ -173,6 +186,20 @@ const movieSearch = (input, tempArray, element) => {
 
   })
 }
+const genreSearch = (input, element) => {
+  data.genres.forEach(genre => {
+    if (Number.isInteger(parseInt(input))) {
+      if (genre.id === parseInt(input)) {
+        const tempGenreDiv = createGenreDivForSearch(genre)
+        tempGenreDiv.append(createGenreList(genre))
+        element.appendChild(tempGenreDiv)
+      }
+    } else {
+
+    }
+
+  })
+}
 const movieCreation = element => {
   const buttonElement = document.createElement("button")
   buttonElement.id = "button"
@@ -244,42 +271,70 @@ const loadEvent = function () {
     //     displayMovieElement(movie, genreElement)
     //   })
     // })
-    data.genres.sort((a, b) => a.name.localeCompare(b.name)).forEach(genre => rootElement.appendChild(createGenreButton(genre, rootElement)))
-    const genreButton = document.getElementsByClassName("genre-button")
+    const buttonsDiv = document.createElement("div")
+    rootElement.appendChild(buttonsDiv)
+    buttonsDiv.id = "buttons-div"
+    data.genres.sort((a, b) => a.name.localeCompare(b.name)).forEach(genre => buttonsDiv.appendChild(createGenreButton(genre)))
+    const genreButtons = document.getElementsByClassName("genre-button")
     const genreDiv = document.createElement("div")
     rootElement.appendChild(genreDiv)
     // const genreIds = []
     const genreIds = {}
-    Array.from(genreButton).forEach(genre => genre.addEventListener("click", function () {
-       genreDiv.innerHTML=""
-      if (genreIds[genre.id]) { //genreIds.includes(genre.id)
-        // genreIds[genreIds.indexOf(genre.toString())+1] = false
-        genreIds[genre.id] = false;
-        data.movies.sort((currentMovie, nextMovie) => currentMovie.year - nextMovie.year).forEach(movie => {
-          movie.genres.forEach(genre => {
-            if ( Object.keys(genreIds).filter((g) => genreIds[g]).every(([g]) => movie.genres.includes(parseInt(g))) ) { //genreIds.includes(genre.toString()) && genreIds[genreIds.indexOf(genre.toString())+1]
-              displayMovieElement(movie, genreDiv)
-              }
-          })
+    Array.from(genreButtons).forEach(genre => genre.addEventListener("click", function () {
+      genreDiv.innerHTML = ""
+      genreIds[genre.id] ? genreIds[genre.id] = false : genreIds[genre.id] = true;
+      const trueIds = Object.keys(genreIds).filter((g) => genreIds[g])
+      // genreIds[genre.id] = false;
+      data.movies.sort((currentMovie, nextMovie) => currentMovie.year - nextMovie.year).forEach(movie => {
+        movie.genres.forEach(genre => {
+          if (trueIds.length > 0
+            && trueIds.every(g => movie.genres.includes(parseInt(g)))
+            && !document.getElementById(`${movie.unique_id}`)) { //genreIds.includes(genre.toString()) && genreIds[genreIds.indexOf(genre.toString())+1]
+            displayMovieElement(movie, genreDiv)
+          }
         })
-      } else {       
-        genreIds[genre.id] = true
-        // genreIds.push(genre.id, true)
-        data.movies.sort((currentMovie, nextMovie) => currentMovie.year - nextMovie.year).forEach((movie) => {
-          movie.genres.forEach(genre => {
-            console.log( Object.keys(genreIds).filter((g) => genreIds[g]));
-            if (Object.keys(genreIds).filter((g) => genreIds[g]).every(([g]) => movie.genres.includes(parseInt(g)))) { //genreIds.includes(genre.toString()) genreIds[genre.toString()] &&
-            
-              displayMovieElement(movie, genreDiv)
-            }
-          })
-        })
-      }
+      })
+      // if (genreIds[genre.id]) { //genreIds.includes(genre.id)
+      //   // genreIds[genreIds.indexOf(genre.toString())+1] = false
+      //   const trueIds = Object.keys(genreIds).filter((g) => genreIds[g])
+      //   genreIds[genre.id] = false;
+      //   data.movies.sort((currentMovie, nextMovie) => currentMovie.year - nextMovie.year).forEach(movie => {
+      //     movie.genres.forEach(genre => {
+      //       if ( trueIds.length > 0
+      //         && trueIds.every(g => movie.genres.includes(parseInt(g))) 
+      //         && !document.getElementById(`${movie.unique_id}`) ) { //genreIds.includes(genre.toString()) && genreIds[genreIds.indexOf(genre.toString())+1]
+      //         displayMovieElement(movie, genreDiv)
+      //         }
+      //     })
+      //   })
+      // } else {       
+      //   const trueIds = Object.keys(genreIds).filter((g) => genreIds[g])
+      //   genreIds[genre.id] = true
+      //   // genreIds.push(genre.id, true)
+      //   data.movies.sort((currentMovie, nextMovie) => currentMovie.year - nextMovie.year).forEach((movie) => {
+      //     movie.genres.forEach(genre => {
+      //       if ( trueIds.length > 0 
+      //         && trueIds.every(g => movie.genres.includes(parseInt(g)))
+      //         && !document.getElementById(`${movie.unique_id}`)) { //genreIds.includes(genre.toString()) genreIds[genre.toString()] &&
+      //         displayMovieElement(movie, genreDiv)
+      //       }
+      //     })
+      //   })
+      // }
       console.log(genreIds)
     }))
   } else if (page === "") {
-    rootElement.innerHTML = '<input type = search id = "search-bar">'
+    rootElement.innerHTML = '<img src = "https://pngshare.com/wp-content/uploads/2021/06/Cool-Google-Logo-Designs-1.png" ><input type = search id = "search-bar">'
     const searchField = document.createElement("div")
+    const homePageButtons = document.createElement("div")
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/movies>Movies</a>'
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/movies/short>Short movies</a>'
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/movies/long>Long movies</a>'
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/actors>Actors</a>'
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/directors>Directors</a>'
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/writers>Writers</a>'
+    homePageButtons.innerHTML += '<button><a href=http://127.0.0.1:9000/genres>Genres</a>'
+    searchField.appendChild(homePageButtons)
     searchField.id = "search.field"
     const searchInputField = document.getElementById("search-bar")
     rootElement.appendChild(searchField)
@@ -290,6 +345,7 @@ const loadEvent = function () {
         const professionalIds = [];
         professionalSearch(searchInput, professionalIds, searchField)
         movieSearch(searchInput, professionalIds, searchField)
+        genreSearch(searchInput, searchField)
 
 
       }
