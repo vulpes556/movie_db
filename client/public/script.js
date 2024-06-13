@@ -239,7 +239,7 @@ const movieById = (tempPage, element) => {
 
 }
 const searchPage = element => {
-  element.innerHTML = '<img src = "https://pngshare.com/wp-content/uploads/2021/06/Cool-Google-Logo-Designs-1.png" ><input type = search id = "search-bar">'
+  element.innerHTML = `<img src = "https://pngshare.com/wp-content/uploads/2021/06/Cool-Google-Logo-Designs-1.png"onclick = "location.href = 'http://127.0.0.1:9000'" ><input type = search id = "search-bar">`
   const searchField = document.createElement("div")
   const homePageButtons = document.createElement("div")
   homePageButtons.id = "home-buttons-div"
