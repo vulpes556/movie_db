@@ -102,7 +102,6 @@ const personListing = (input, element, professions) => { // "Actor", rootElement
   }
   data.professionals.sort((currentPerson, nextPerson) => currentPerson.name.trim().localeCompare(nextPerson.name.trim())).forEach(professional => {
     if (Number.isInteger(input) ? professional.id === input : professional.roles.includes(input)) {
-      ;
       const tempNameDiv = document.createElement("div")
       tempNameDiv.className = "post-it"
       tempNameDiv.style.transform = `rotate(${Math.floor(Math.random() * 24) - 12}deg)`
@@ -143,7 +142,7 @@ const professionalSearch = (input, tempArray, element) => {
         personListing(parseInt(input), element, ["actors", "directors", "writers"])
       }
     } else {
-      if (prof.name.includes(input)) {
+      if (prof.name.toLowerCase().includes(input.toLowerCase())) {
         personListing(prof.id, element, ["actors", "directors", "writers"])
         if (!tempArray.includes(prof.id)) {
           tempArray.push(prof.id)
@@ -165,7 +164,7 @@ const movieSearch = (input, tempArray, element) => {
         if (((movie.actors.includes(id)
           || movie.directors.includes(id)
           || movie.writers.includes(id))
-          || movie.title.includes(input))
+          || movie.title.toLowerCase().includes(input.toLowerCase()))
           && !document.getElementById(`${movie.unique_id}`)) {
           displayMovieElement(movie, element)
         }
